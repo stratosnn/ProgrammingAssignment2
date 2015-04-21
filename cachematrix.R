@@ -1,15 +1,41 @@
-## Put comments here that give an overall description of what your
-## functions do
+## Implementation of matrix class with inverse caching 
 
-## Write a short comment describing this function
-
+## General interface to create "caching" matrix 
+## defines supported actions on the matrix
 makeCacheMatrix <- function(x = matrix()) {
-
+    inv <- NULL
+    set <- function(y) {
+        x <<- y
+        inv <<- NULL
+    }
+    get <- function() x
+    setinv <- function(newinv) inv <<- newinv
+    getinv <- function() inv
+    list(set = set, get = get,
+         setinv = setinv,
+         getinv = getinv)
 }
 
 
-## Write a short comment describing this function
-
+## Returns matrix inverse. Function uses caching mechanism for matrices that were
+## previously inversed 
 cacheSolve <- function(x, ...) {
-        ## Return a matrix that is the inverse of 'x'
+    inv <- x$getinv()
+    # return chached value if available
+    if(!is.null(inv)) {
+        message("using cache for matrix inverse")
+        return(inv)
+    }
+    inv <- solve(x$get(), ...)
+    x$setinv(inv)
+    inv
 }
+
+## Examples:
+#  m <- matrix(c(1,2,2,1), nrow=2, ncol=2)
+#  x <- matrix(c(3,2,2,3), nrow=2, ncol=2)
+#  cm <- makeCacheMatrix(m)
+#  cacheSolve(cm) # cache miss
+#  cacheSolve(cm) # cache hit
+#  cm$set(x)
+#  cacheSolve(cm) # cache miss
