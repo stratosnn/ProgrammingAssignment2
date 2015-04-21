@@ -4,6 +4,7 @@
 ## defines supported actions on the matrix
 makeCacheMatrix <- function(x = matrix()) {
     inv <- NULL
+    # if matrix is changed we have to reset cache
     set <- function(y) {
         x <<- y
         inv <<- NULL
